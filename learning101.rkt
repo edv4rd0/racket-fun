@@ -16,5 +16,7 @@
          [c (checker rp bp)]
          [c4 (four c)])
     (four c4)))
-
-        
+(define (series mk)
+  (hc-append 4 (mk 5) (mk 10) (mk 20)))
+(define (cbs cbs_size)
+  (checkerboard (square cbs_size)))
