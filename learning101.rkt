@@ -1,4 +1,7 @@
 #lang slideshow
+(require pict/flash)
+(require slideshow/code)
+
 (define c (circle 10))
 (define r (rectangle 10 20))
 (define (square n)
@@ -20,3 +23,40 @@
   (hc-append 4 (mk 5) (mk 10) (mk 20)))
 (define (cbs cbs_size)
   (checkerboard (square cbs_size)))
+(define (rgb-series mk)
+  (vc-append 5
+   (series (lambda (sz) (colorize (mk sz) "red")))
+   (series (lambda (sz) (colorize (mk sz) "green")))
+   (series (lambda (sz) (colorize (mk sz) "blue")))))
+(define (rgb-maker mk)
+  (lambda (sz)
+    (vc-append (colorize (mk sz) "red")
+               (colorize (mk sz) "green")
+               (colorize (mk sz) "blue"))))
+(define (rainbow p)
+  (map (lambda (color)
+         (colorize p color))
+       (list "red" "orange" "yellow" "green" "blue" "purple")))
+(define-syntax pict+code
+  (syntax-rules ()
+    [(pict+code expr)
+     (hc-append 10
+                expr
+                (code expr))]))
+; gui shit
+(require racket/class
+         racket/gui/base)
+(define f (new frame% [label "My Art"]
+                      [width 300]
+                      [height 300]
+                      [alignment '(center center)]))
+(define (add-drawing p)
+  (let ([drawer (make-pict-drawer p)])
+    (new canvas% [parent f]
+                 [style '(border)]
+                 [paint-callback (lambda (self dc)
+                                   (drawer dc 0 0))])))
+
+
+
+(provide rainbow square)
